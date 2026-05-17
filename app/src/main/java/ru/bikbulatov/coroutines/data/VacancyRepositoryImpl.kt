@@ -1,15 +1,9 @@
 package ru.bikbulatov.coroutines.data
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.delay
 import ru.bikbulatov.coroutines.domain.Vacancy
 import ru.bikbulatov.coroutines.domain.VacancyRepository
 import javax.inject.Inject
-import javax.inject.Singleton
-
 
 
 class VacancyRepositoryImpl @Inject constructor() : VacancyRepository {
@@ -81,15 +75,11 @@ class VacancyRepositoryImpl @Inject constructor() : VacancyRepository {
     )
 
     override suspend fun loadVacancies(): Result<List<Vacancy>> {
-        // Симуляция сетевого запроса с задержкой
         delay(500)
         return Result.success(allVacancies)
     }
 
     override suspend fun searchVacancies(query: String): Result<List<Vacancy>> {
-        // Симуляция сетевого запроса поиска с БОЛЬШОЙ задержкой
-        // Это демонстрирует проблему: при быстром вводе старые запросы
-        // выполняются дольше и приходят позже новых
         val searchDelay = when {
             query.isEmpty() -> 100L
             query.length == 1 -> 800L  // Первый символ - долгий запрос
@@ -97,32 +87,21 @@ class VacancyRepositoryImpl @Inject constructor() : VacancyRepository {
             query.length == 3 -> 400L  // Третий символ - быстрый запрос
             else -> 300L               // Дальше - быстрые запросы
         }
-        
+
         delay(searchDelay)
-        
+
         val filteredVacancies = if (query.isEmpty()) {
             allVacancies
         } else {
             val lowerQuery = query.lowercase()
             allVacancies.filter { vacancy ->
                 vacancy.title.lowercase().contains(lowerQuery) ||
-                vacancy.company.lowercase().contains(lowerQuery) ||
-                vacancy.location?.lowercase()?.contains(lowerQuery) == true ||
-                vacancy.description?.lowercase()?.contains(lowerQuery) == true
+                        vacancy.company.lowercase().contains(lowerQuery) ||
+                        vacancy.location?.lowercase()?.contains(lowerQuery) == true ||
+                        vacancy.description?.lowercase()?.contains(lowerQuery) == true
             }
         }
-        
+
         return Result.success(filteredVacancies)
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindVacancyRepository(
-        repositoryImpl: VacancyRepositoryImpl
-    ): VacancyRepository
 }

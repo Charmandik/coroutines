@@ -1,4 +1,4 @@
-package ru.bikbulatov.coroutines.ui.theme
+package ru.bikbulatov.coroutines.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

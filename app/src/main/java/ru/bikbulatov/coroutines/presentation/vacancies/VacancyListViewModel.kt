@@ -1,4 +1,4 @@
-package ru.bikbulatov.coroutines.ui
+package ru.bikbulatov.coroutines.presentation.vacancies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +12,6 @@ import kotlinx.coroutines.launch
 import ru.bikbulatov.coroutines.domain.LoadVacanciesUseCase
 import ru.bikbulatov.coroutines.domain.Vacancy
 import ru.bikbulatov.coroutines.domain.VacancyRepository
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,28 +59,19 @@ class VacancyListViewModel @Inject constructor(
 
         searchJob = viewModelScope.launch {
             _isSearching.value = true
-
-            // Логгируем начало поиска для отладки
             println("🔍 Начало поиска: '$query' в ${System.currentTimeMillis()}")
 
             val result = vacancyRepository.searchVacancies(query)
 
             result.onSuccess { vacancies ->
-                // Небольшая дополнительная задержка перед обновлением UI
-                // чтобы усилить эффект "неправильного" поведения
                 delay(50)
-
-                // НЕПРАВИЛЬНО: всегда обновляем результаты, даже если
-                // запрос устарел (пользователь уже ввёл другой запрос)
                 _vacancies.value = vacancies
                 _lastProcessedQuery.value = query
                 _isSearching.value = false
 
                 println(
                     "✅ Поиск завершён: '$query' найдено ${vacancies.size} вакансий в ${
-                        LocalDateTime.now().format(
-                            DateTimeFormatter.ISO_DATE_TIME
-                        )
+                        System.currentTimeMillis()
                     }"
                 )
             }.onFailure { error ->
@@ -90,8 +79,6 @@ class VacancyListViewModel @Inject constructor(
                 println("❌ Ошибка поиска: '${query}' - ${error.message}")
             }
         }
-        // Обратите внимание: мы НЕ вызываем searchJob?.cancel() перед новым запуском!
-        // Это и есть основная ошибка - предыдущие запросы продолжают выполняться
     }
 
     private fun applyFilter() {
@@ -112,10 +99,4 @@ class VacancyListViewModel @Inject constructor(
         // Обработка клика по вакансии
         // Можно добавить навигацию или другое действие
     }
-}
-
-sealed class VacancyListUiState {
-    data object Loading : VacancyListUiState()
-    data object Success : VacancyListUiState()
-    data class Error(val message: String) : VacancyListUiState()
 }

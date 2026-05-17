@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import ru.bikbulatov.coroutines.ui.VacancyListScreen
-import ru.bikbulatov.coroutines.ui.VacancyListViewModel
-import ru.bikbulatov.coroutines.ui.VacancyListUiState
-import ru.bikbulatov.coroutines.ui.theme.CoroutinesTheme
+import ru.bikbulatov.coroutines.presentation.vacancies.VacancyListScreen
+import ru.bikbulatov.coroutines.presentation.vacancies.VacancyListViewModel
+import ru.bikbulatov.coroutines.presentation.vacancies.VacancyListUiState
+import ru.bikbulatov.coroutines.presentation.theme.CoroutinesTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            androidx.compose.material3.Text(
+                            Text(
                                 text = "Ошибка: ${(uiState as VacancyListUiState.Error).message}",
                                 color = MaterialTheme.colorScheme.error
                             )

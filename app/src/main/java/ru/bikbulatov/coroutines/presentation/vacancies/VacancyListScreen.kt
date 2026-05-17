@@ -1,4 +1,4 @@
-package ru.bikbulatov.coroutines.ui
+package ru.bikbulatov.coroutines.presentation.vacancies
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.bikbulatov.coroutines.domain.Vacancy
-import ru.bikbulatov.coroutines.ui.theme.CoroutinesTheme
+import ru.bikbulatov.coroutines.presentation.theme.CoroutinesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -19,7 +19,7 @@
 
 ## Причина проблемы
 
-В [`VacancyListViewModel.kt`](ui/VacancyListViewModel.kt:67) используется неправильный подход:
+В [`VacancyListViewModel.kt`](presentation/VacancyListViewModel.kt:67) используется неправильный подход:
 
 ```kotlin
 // НЕПРАВИЛЬНО: не отменяем предыдущие запросы
@@ -118,9 +118,3 @@ searchJob = viewModelScope.launch {
 2. **Используйте `debounce`** для обработки пользовательского ввода
 3. **Проверяйте актуальность данных** перед обновлением UI
 4. **Используйте `flatMapLatest`** вместо `flatMapConcat` или `flatMapMerge` для поисковых запросов
-
-## Файлы проекта
-
-- [`VacancyListViewModel.kt`](ui/VacancyListViewModel.kt) - ViewModel с неправильной реализацией
-- [`VacancyRepositoryImpl.kt`](data/VacancyRepositoryImpl.kt) - Репозиторий с симуляцией задержек
-- [`VacancyListScreen.kt`](ui/VacancyListScreen.kt) - UI экран поиска

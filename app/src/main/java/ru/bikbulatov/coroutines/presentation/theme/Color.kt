@@ -1,4 +1,4 @@
-package ru.bikbulatov.coroutines.ui.theme
+package ru.bikbulatov.coroutines.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
