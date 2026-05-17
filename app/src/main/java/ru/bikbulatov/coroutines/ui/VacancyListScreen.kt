@@ -1,5 +1,8 @@
 package ru.bikbulatov.coroutines.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +24,8 @@ import ru.bikbulatov.coroutines.ui.theme.CoroutinesTheme
 @Composable
 fun VacancyListScreen(
     vacancies: List<Vacancy>,
+    isSearching: Boolean = false,
+    lastProcessedQuery: String = "",
     onVacancyClick: (Vacancy) -> Unit = {},
     onSearchQueryChange: (String) -> Unit = {}
 ) {
@@ -52,8 +57,30 @@ fun VacancyListScreen(
                             contentDescription = "Поиск"
                         )
                     },
+                    trailingIcon = {
+                        if (isSearching) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    },
                     singleLine = true
                 )
+                
+                // Индикатор последнего обработанного запроса - для демонстрации проблемы
+                AnimatedVisibility(
+                    visible = lastProcessedQuery.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Text(
+                        text = "🔍 Последний запрос: '$lastProcessedQuery'",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
             }
         }
     ) { paddingValues ->
@@ -64,11 +91,23 @@ fun VacancyListScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Вакансий не найдено",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Вакансий не найдено",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (isSearching) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "(поиск ещё выполняется...)",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             }
         } else {
             LazyColumn(
@@ -194,7 +233,11 @@ private fun VacancyListScreenPreview() {
     )
 
     CoroutinesTheme {
-        VacancyListScreen(vacancies = sampleVacancies)
+        VacancyListScreen(
+            vacancies = sampleVacancies,
+            isSearching = false,
+            lastProcessedQuery = "and"
+        )
     }
 }
 
@@ -202,6 +245,10 @@ private fun VacancyListScreenPreview() {
 @Composable
 private fun VacancyListScreenEmptyPreview() {
     CoroutinesTheme {
-        VacancyListScreen(vacancies = emptyList())
+        VacancyListScreen(
+            vacancies = emptyList(),
+            isSearching = true,
+            lastProcessedQuery = "xyz"
+        )
     }
 }

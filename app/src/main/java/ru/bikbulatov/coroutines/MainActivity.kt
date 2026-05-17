@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
                 val vacancies by viewModel.vacancies.collectAsState()
                 val uiState by viewModel.uiState.collectAsState()
+                val isSearching by viewModel.isSearching.collectAsState()
+                val lastProcessedQuery by viewModel.lastProcessedQuery.collectAsState()
 
                 when (uiState) {
                     is VacancyListUiState.Loading -> {
@@ -56,6 +58,8 @@ class MainActivity : ComponentActivity() {
                     is VacancyListUiState.Success -> {
                         VacancyListScreen(
                             vacancies = vacancies,
+                            isSearching = isSearching,
+                            lastProcessedQuery = lastProcessedQuery,
                             onVacancyClick = { vacancy ->
                                 viewModel.onVacancyClick(vacancy)
                             },
