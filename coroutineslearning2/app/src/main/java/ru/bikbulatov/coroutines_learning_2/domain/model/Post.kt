@@ -1,0 +1,8 @@
+package ru.bikbulatov.coroutines_learning_2.domain.model
+
+data class Post(
+    val id: Int,
+    val userId: Int,
+    val title: String,
+    val body: String
+)
